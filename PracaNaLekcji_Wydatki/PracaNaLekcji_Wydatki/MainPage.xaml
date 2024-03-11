@@ -1,24 +1,39 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+<TabbedPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="PracaNaLekcji_Wydatki.MainPage">
 
-    <StackLayout>
-        <Frame BackgroundColor="#2196F3" Padding="24" CornerRadius="0">
-            <Label Text="Welcome to Xamarin.Forms!" HorizontalTextAlignment="Center" TextColor="White" FontSize="36"/>
-        </Frame>
-        <Label Text="Start developing now" FontSize="Title" Padding="30,10,30,10"/>
-        <Label Text="Make changes to your XAML file and save to see your UI update in the running app with XAML Hot Reload. Give it a try!" FontSize="16" Padding="30,0,30,0"/>
-        <Label FontSize="16" Padding="30,24,30,0">
-            <Label.FormattedText>
-                <FormattedString>
-                    <FormattedString.Spans>
-                        <Span Text="Learn more at "/>
-                        <Span Text="https://aka.ms/xamarin-quickstart" FontAttributes="Bold"/>
-                    </FormattedString.Spans>
-                </FormattedString>
-            </Label.FormattedText>
-        </Label>
-    </StackLayout>
+    <ContentPage Title="Dodaj wydatki">
+        <StackLayout>
+            <Label Text="Tutaj możesz zapisać swoje wydatki"/>
 
-</ContentPage>
+            <Label Text="Nazwa wydatku"/>
+            <Entry x:Name="nameEntry"/>
+
+            <Label Text="Kwota wydatku"/>
+            <Entry x:Name="valueEntry"/>
+
+            <Label Text="Data wydatku"/>
+            <DatePicker x:Name="datePicker"/>
+
+            <Button Text="Dodaj wydatek" BackgroundColor="Transparent" BorderColor="Black" BorderWidth="2"/>
+        </StackLayout>
+    </ContentPage>
+
+    <ContentPage Title="Twoje wydatki">
+        <StackLayout>
+            <ListView x:Name="ExpenseList" ItemTapped="DetailsPage">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <StackLayout>
+                                
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackLayout>
+    </ContentPage>
+
+</TabbedPage>
