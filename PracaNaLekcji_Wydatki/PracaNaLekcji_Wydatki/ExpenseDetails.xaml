@@ -4,14 +4,28 @@
              x:Class="PracaNaLekcji_Wydatki.ExpenseDetails">
     <ContentPage.Content>
         <StackLayout>
-            <Label Text="Data:"/>
-            <Label x:Name="dateLbl"/>
+            <SearchBar x:Name="searchbar" TextChanged="Search" Placeholder="Wpisz poszukiwaną nazwę"/>
+            <ListView x:Name="List" HasUnevenRows="True">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <Frame Margin="20">
+                                <StackLayout>
+                                    <Label Text="Data:" FontAttributes="Bold"/>
+                                    <Label x:Name="dateLbl" Text="{Binding Date}"/>
 
-            <Label Text="Kwota:"/>
-            <Label x:Name="valueLbl"/>
+                                    <Label Text="Kwota:" FontAttributes="Bold"/>
+                                    <Label x:Name="valueLbl" Text="{Binding Value}"/>
 
-            <Label Text="Nazwa"/>
-            <Label x:Name="nameLbl"/>
-        </StackLayout>
+                                    <Label Text="Nazwa" FontAttributes="Bold"/>
+                                    <Label x:Name="nameLbl" Text="{Binding Name}"/>
+                                    <Button Text="Usun" BackgroundColor="Transparent" Clicked="Delete" HorizontalOptions="Center" WidthRequest="180"/>
+                                </StackLayout>
+                            </Frame>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackLayout> 
     </ContentPage.Content>
 </ContentPage>

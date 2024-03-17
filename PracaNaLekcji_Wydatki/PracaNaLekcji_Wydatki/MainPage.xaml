@@ -1,33 +1,42 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <TabbedPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="PracaNaLekcji_Wydatki.MainPage">
+             x:Class="PracaNaLekcji_Wydatki.MainPage"
+             NavigationPage.HasNavigationBar="False">
 
     <ContentPage Title="Dodaj wydatki">
         <StackLayout>
-            <Label Text="Tutaj możesz zapisać swoje wydatki"/>
+            <Label Text="Tutaj możesz zapisać swoje wydatki" FontSize="15" Margin="30,20,30,0" HorizontalTextAlignment="Center"/>
 
-            <Label Text="Nazwa wydatku"/>
-            <Entry x:Name="nameEntry"/>
+            <Frame>
+                <StackLayout>
+                    <Label Text="Nazwa wydatku" FontSize="13" HorizontalTextAlignment="Start" Margin="30,0,0,0" TextColor="Black"/>
+                    <Entry x:Name="nameEntry" FontSize="13" Margin="23,0"/>
 
-            <Label Text="Kwota wydatku"/>
-            <Entry x:Name="valueEntry"/>
+                    <Label Text="Kwota wydatku" FontSize="13" HorizontalTextAlignment="Start" Margin="30,0,0,0" TextColor="Black"/>
+                    <Entry x:Name="valueEntry" FontSize="13" Margin="23,0" Keyboard="Numeric"/>
 
-            <Label Text="Data wydatku"/>
-            <DatePicker x:Name="datePicker"/>
+                    <Label Text="Data wydatku" FontSize="13" HorizontalTextAlignment="Start" Margin="30,0,0,0" TextColor="Black"/>
+                    <DatePicker x:Name="datePicker" FontSize="13" Margin="23,0" Format="dd/MM/yyyy"/>
 
-            <Button Text="Dodaj wydatek" BackgroundColor="Transparent" BorderColor="Black" BorderWidth="2"/>
+                    <Button Text="Dodaj wydatek" BackgroundColor="Transparent" BorderColor="Black" BorderWidth="1" CornerRadius="10" Clicked="AddExpense"/>
+                </StackLayout>
+            </Frame>
         </StackLayout>
     </ContentPage>
 
     <ContentPage Title="Twoje wydatki">
         <StackLayout>
-            <ListView x:Name="ExpenseList" ItemTapped="DetailsPage">
+            <ListView x:Name="ExpenseList" ItemTapped="DetailsPage" HasUnevenRows="True">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
                             <StackLayout>
-                                
+                                <Frame Margin="20">
+                                    <StackLayout Padding="10">
+                                        <Label Text="{Binding Date}" FontAttributes="Bold"/>
+                                    </StackLayout>
+                                </Frame>
                             </StackLayout>
                         </ViewCell>
                     </DataTemplate>
