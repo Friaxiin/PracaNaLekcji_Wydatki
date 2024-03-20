@@ -19,7 +19,7 @@
                     <Label Text="Data wydatku" FontSize="13" HorizontalTextAlignment="Start" Margin="30,0,0,0" TextColor="Black"/>
                     <DatePicker x:Name="datePicker" FontSize="13" Margin="23,0" Format="dd/MM/yyyy"/>
 
-                    <Button Text="Dodaj wydatek" BackgroundColor="Transparent" BorderColor="Black" BorderWidth="1" CornerRadius="10" Clicked="AddExpense"/>
+                    <Button Text="Dodaj wydatek" BackgroundColor="Transparent" BorderColor="Black" BorderWidth="1" CornerRadius="10" Clicked="AddExpenseTxt"/>
                 </StackLayout>
             </Frame>
         </StackLayout>

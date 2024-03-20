@@ -12,12 +12,14 @@ namespace PracaNaLekcji_Wydatki
 {
     public partial class MainPage : TabbedPage
     {
+        string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "expense.txt");
+        List<Expense> expensesList = new List<Expense>();
         public MainPage()
         {
             InitializeComponent();
-            Display();
-            //string path1 = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "expenses.txt");
-            //Console.WriteLine("XD" + path1);
+            //Display();
+            DisplayTxt();
+            Console.WriteLine("XD" + path);
         }
         
         private void DetailsPage(object sender, ItemTappedEventArgs e)
@@ -60,6 +62,54 @@ namespace PracaNaLekcji_Wydatki
             {
                 App.Database.Add(new Expense() { Name = nameEntry.Text, Value = decimal.Parse(valueEntry.Text), Date = datePicker.Date });
             }
+            Display();
+            DisplayAlert("Informacja", "Pomyślnie dodano wydatek", "OK");
+            nameEntry.Text = valueEntry.Text = String.Empty;
+        }
+
+        public void DisplayTxt()
+        {
+            List<string> strings = File.ReadAllLines(path).ToList();
+            List<Expense> expenses = new List<Expense>();
+            Expense expense = new Expense();
+            Console.WriteLine("Amogus" + strings.Count);
+
+            foreach (var item in strings)
+            {
+                string[] substring = item.Split(';');
+                expense.Name = substring[0];
+                expense.Value = decimal.Parse(substring[1]);
+                expense.Date  = DateTime.Parse(substring[2]);
+                expenses.Add(expense);
+            }
+
+            ExpenseList.ItemsSource = expenses;
+        }
+        private void AddExpenseTxt(object sender, EventArgs e)
+        {
+            Expense expense = new Expense();
+            if (string.IsNullOrEmpty(nameEntry.Text))
+            {
+                expense.Date = datePicker.Date;
+                expense.Name = "Brak tytulu";
+                expense.Value = decimal.Parse(valueEntry.Text);
+            }
+            else
+            {
+                expense.Date = datePicker.Date;
+                expense.Name = nameEntry.Text;
+                expense.Value = decimal.Parse(valueEntry.Text);
+            }
+
+            expensesList.Add(expense);
+
+            List<string> strings = new List<string>();
+            foreach(var item in expensesList)
+            {
+                strings.Add(item.Name + "; " + item.Value + "; " + item.Date);
+            }
+            File.WriteAllLines(path, strings);
+
             Display();
             DisplayAlert("Informacja", "Pomyślnie dodano wydatek", "OK");
             nameEntry.Text = valueEntry.Text = String.Empty;
