@@ -11,6 +11,9 @@
                         <ViewCell>
                             <Frame Margin="20">
                                 <StackLayout>
+                                    <Label Text="Id:" FontAttributes="Bold"/>
+                                    <Label Text="{Binding Id}"/>
+                                    
                                     <Label Text="Data:" FontAttributes="Bold"/>
                                     <Label x:Name="dateLbl" Text="{Binding Date}"/>
 

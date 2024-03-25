@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,30 +14,37 @@ namespace PracaNaLekcji_Wydatki
     public partial class ExpenseDetails : ContentPage
     {
         DateTime date;
-        public ExpenseDetails(DateTime date)
+        Expense Expense = new Expense();
+        string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "expense4.txt");
+        public ExpenseDetails(Expense expense)
         {
             InitializeComponent();
 
-            this.date = date;
-            Display();
+            this.date = expense.Date;
+            DisplayTxt();
         }
-        public void Display(List<Expense> filter = null)
+        public void DisplayTxt()
         {
-            List<Expense> tmp = new List<Expense>();
-            List<Expense> expenses = App.Database.GetAll();
-            if(filter != null)
+            List<string> strings = File.ReadAllLines(path).ToList();
+            List<Expense> expenses = new List<Expense>();
+            Expense expense = new Expense();
+            Console.WriteLine("Amogus" + strings.Count);
+
+            foreach (var item in strings)
             {
-                expenses = filter;
-            }
-            for (int i = 0; i < expenses.Count; i++)
-            {
-                if (expenses[i].Date == date)
+                string[] substring = item.Split(';');
+                    expense.Id = int.Parse(substring[0]);
+                    expense.Name = substring[1];
+                    expense.Value = decimal.Parse(substring[2]);
+                    expense.Date = DateTime.Parse(substring[3]);
+
+                if (expense.Date == date)
                 {
-                    tmp.Add(expenses[i]);
+                    expenses.Add(expense);
                 }
             }
-            List.ItemsSource = tmp;
 
+            List.ItemsSource = expenses;
         }
         private void Delete(object sender, EventArgs e)
         {
@@ -44,7 +52,7 @@ namespace PracaNaLekcji_Wydatki
             Expense expense = btn.BindingContext as Expense;
             App.Database.Remove(expense);
 
-            Display();
+            DisplayTxt();
         }
 
         private void Search(object sender, TextChangedEventArgs e)
@@ -57,7 +65,6 @@ namespace PracaNaLekcji_Wydatki
                     tmp.Add(App.Database.GetAll()[i]);
                 }
             }
-            Display(tmp);
         }
     }
 }

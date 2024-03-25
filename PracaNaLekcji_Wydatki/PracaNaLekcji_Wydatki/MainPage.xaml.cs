@@ -12,16 +12,26 @@ namespace PracaNaLekcji_Wydatki
 {
     public partial class MainPage : TabbedPage
     {
-        string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "expense.txt");
+        int id = 0;
+        string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "expense5.txt");
         List<Expense> expensesList = new List<Expense>();
         public MainPage()
         {
             InitializeComponent();
-            //Display();
+
             DisplayTxt();
             Console.WriteLine("XD" + path);
         }
-        
+        public void ReadId()
+        {
+            if (File.Exists(path))
+            {
+                List<string> strings = new List<string>();
+                strings = File.ReadAllLines(path).ToList();
+                id = strings.Count();
+                id++;
+            }
+        }        
         private void DetailsPage(object sender, ItemTappedEventArgs e)
         {
             Expense expense = (Expense)ExpenseList.SelectedItem;
@@ -30,89 +40,99 @@ namespace PracaNaLekcji_Wydatki
             {
                 DisplayAlert("Błąd", "Wybierz element z listy", "OK");
             }
-            Navigation.PushAsync(new ExpenseDetails((ExpenseList.SelectedItem as Expense).Date));
+            Navigation.PushAsync(new ExpenseDetails((ExpenseList.SelectedItem as Expense)));
         }
-        public void Display()
-        {
-            List<Expense> tmp = new List<Expense>();
-            for (int i = 0; i < App.Database.GetAll().Count; i++)
-            {
-                bool exists = false;
-                for (int j = 0; j < tmp.Count; j++)
-                {
-                    if (App.Database.GetAll()[i].Date == tmp[j].Date)
-                    {
-                        exists = true;
-                    }
-                }
-                if (!exists)
-                {
-                    tmp.Add(App.Database.GetAll()[i]);
-                }
-            }
-            ExpenseList.ItemsSource = tmp;
-        }
-        private void AddExpense(object sender, EventArgs e)
-        {
-            if (string.IsNullOrEmpty(nameEntry.Text))
-            {
-                App.Database.Add(new Expense() { Name = "Brak tytulu", Value = decimal.Parse(valueEntry.Text), Date = datePicker.Date});
-            }
-            else
-            {
-                App.Database.Add(new Expense() { Name = nameEntry.Text, Value = decimal.Parse(valueEntry.Text), Date = datePicker.Date });
-            }
-            Display();
-            DisplayAlert("Informacja", "Pomyślnie dodano wydatek", "OK");
-            nameEntry.Text = valueEntry.Text = String.Empty;
-        }
-
         public void DisplayTxt()
         {
-            List<string> strings = File.ReadAllLines(path).ToList();
-            List<Expense> expenses = new List<Expense>();
-            Expense expense = new Expense();
-            Console.WriteLine("Amogus" + strings.Count);
-
-            foreach (var item in strings)
+            if(File.Exists(path))
             {
-                string[] substring = item.Split(';');
-                expense.Name = substring[0];
-                expense.Value = decimal.Parse(substring[1]);
-                expense.Date  = DateTime.Parse(substring[2]);
-                expenses.Add(expense);
-            }
+                List<string> strings = File.ReadAllLines(path).ToList();
+                List<Expense> expenses = new List<Expense>();
+                Expense expense = new Expense();
+                DateTime LastDate = DateTime.Now;
 
-            ExpenseList.ItemsSource = expenses;
+                Console.WriteLine("Amogus" + strings.Count);
+
+                foreach (var item in strings)
+                {
+                    string[] substring = item.Split(';');
+                    if (DateTime.Parse(substring[3]) != LastDate)
+                    {
+                        expense.Id = int.Parse(substring[0]);
+                        expense.Name = substring[1];
+                        expense.Value = decimal.Parse(substring[2]);
+                        expense.Date = DateTime.Parse(substring[3]);
+
+                        LastDate = DateTime.Parse(substring[3]);
+
+                        expenses.Add(expense);
+                    }
+                }
+
+                ExpenseList.ItemsSource = expenses;
+            }
         }
+        
         private void AddExpenseTxt(object sender, EventArgs e)
         {
-            Expense expense = new Expense();
-            if (string.IsNullOrEmpty(nameEntry.Text))
+            if (File.Exists(path))
             {
-                expense.Date = datePicker.Date;
-                expense.Name = "Brak tytulu";
-                expense.Value = decimal.Parse(valueEntry.Text);
-            }
+                expensesList = Read();
+                Expense expense = new Expense();
+                ReadId();
+                if (string.IsNullOrEmpty(nameEntry.Text))
+                {
+                    expense.Id = id;
+                    expense.Date = datePicker.Date;
+                    expense.Name = "Brak tytulu";
+                    expense.Value = decimal.Parse(valueEntry.Text);
+                }
+                else
+                {
+                    expense.Id = id;
+                    expense.Date = datePicker.Date;
+                    expense.Name = nameEntry.Text;
+                    expense.Value = decimal.Parse(valueEntry.Text);
+                }
+
+                expensesList.Add(expense);
+
+                List<string> strings = new List<string>();
+                foreach (var item in expensesList)
+                {
+                    strings.Add(item.Id + "; " + item.Name + "; " + item.Value + "; " + item.Date);
+                }
+                File.WriteAllLines(path, strings);
+
+                DisplayAlert("Informacja", "Pomyślnie dodano wydatek", "OK");
+                nameEntry.Text = valueEntry.Text = String.Empty;
+                DisplayTxt();
+            }    
             else
             {
-                expense.Date = datePicker.Date;
-                expense.Name = nameEntry.Text;
-                expense.Value = decimal.Parse(valueEntry.Text);
+                File.WriteAllText(path, "");
             }
-
-            expensesList.Add(expense);
-
-            List<string> strings = new List<string>();
-            foreach(var item in expensesList)
+        }
+        public List<Expense> Read()
+        {
+            if (File.Exists(path))
             {
-                strings.Add(item.Name + "; " + item.Value + "; " + item.Date);
-            }
-            File.WriteAllLines(path, strings);
+                List<string> strings = File.ReadAllLines(path).ToList();
+                List<Expense> expenses = new List<Expense>();
+                Expense expense = new Expense();
 
-            Display();
-            DisplayAlert("Informacja", "Pomyślnie dodano wydatek", "OK");
-            nameEntry.Text = valueEntry.Text = String.Empty;
+                foreach (var item in strings)
+                {
+                    string[] substring = item.Split(';');
+                    expense.Id = int.Parse(substring[0]);
+                    expense.Name = substring[1];
+                    expense.Value = decimal.Parse(substring[2]);
+                    expense.Date = DateTime.Parse(substring[3]);
+                    expenses.Add(expense);
+                }
+                return expenses;
+            }
+            return null;
         }
     }
 }
